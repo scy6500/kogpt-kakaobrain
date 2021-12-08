@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>KoGPT2</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<script type="text/javascript">
+    let time_obj = undefined;
+    let flag = undefined;
+    let chars = undefined;
+
+    window.onload = () => {
+        time_obj = document.getElementById("timer");
+        flag = false;       // 더블 클릭 체크
+    }
+
+
+    function double_submit_check() {
+        if (flag) {
+            console.log("double");
+            return true;
+        }
+        else {
+            flag = true;
+
+            return false;
+        }
+    }
+
+
+    function send_req() {
+        document.getElementById('warning').innerText = '';
+        document.getElementById('result').innerHTML = '';
+        if (double_submit_check()){
+            return ;
+        }
+
+        let text = document.getElementById("text").value;
+
+        if (text == '') {
+            document.getElementById('warning').innerText = 'Please fill text!';
+            flag = false;
+            return ;
+        }
+
+        const formData = new FormData();
+        const url = "/generate";
+        let start = 0;
+
+        formData.append('text', text);
+        formData.append('length', 128);
+
+        // timer
+        timer = setInterval(() => {
+            start += 1;
+            time_obj.innerText = `${start / 10} 's`;
+        }, 100);
+
+        async function getResponse() {
+            try {
+                const response = await fetch(url, { method: 'POST', body: formData, });
+                const result = await response.json();
+                console.log(result);
+                if (response.status === 200) {
+                    document.getElementById('result').innerHTML = result["result"];
+                    time_obj.innerText = 'Done!';
+                } else {
+                    document.getElementById('warning').innerText = result["Error"];
+                }
+            }
+            catch (err){
+                document.getElementById('warning').innerText = err;
+            }
+            finally {
+                clearInterval(timer);
+                flag = false;
+            }
+        }
+        getResponse()
+    }
+
+</script>
+<body>
+    <div class="styles">
+        <style>
+                #button{
+                    border-top-left-radius: 5pt;
+                    border-top-right-radius: 5pt;
+                    border-bottom-left-radius: 5pt;
+                    border-bottom-right-radius: 5pt;
+                }
+
+                #length{
+                    width: 70px;
+                    height: 30px;
+                    border-top-left-radius: 5pt;
+                    border-top-right-radius: 5pt;
+                    border-bottom-left-radius: 5pt;
+                    border-bottom-right-radius: 5pt;
+                }
+
+                table {
+                  border-spacing: 10px;
+                  border-collapse: separate;
+                }
+
+        </style>
+    </div>
+    <div class="container">
+        <div class="jumbotron mt-3">
+            <div class="intro">
+                <br>
+                <!-- Project title -->
+                <h1>KoGPT (Korean Generative Pre-trained Transformer)</h1><br>
+                <a>Generate Korean using KakaoBrain's KoGPT model.</a><br><br>
+
+                <a>Github : </a> <a href="https://github.com/kakaobrain/kogpt" target="_blank">KakaoBrain KoGPT</a><br>
+                <a>Open API : </a> <a href="https://ainize.ai/scy6500/kogpt-kakaobrain?branch=main" target="_blank">On Ainize</a><br>
+                <a>License : </a> <a href="https://github.com/kakaobrain/kogpt/blob/main/LICENSE.cc-by-nc-nd-4.0" target="_blank">CC-BY-NC-ND 4.0</a><br>
+            </div>
+
+            <hr width="90%">
+
+            <div class="Notice">
+                <h3>Notice</h3>
+                <ul>
+                    <li>In this demo, the text length is fixed at 128.</li>
+                    <li>The last line can be cut off in the middle.</li>
+                </ul>
+            </div>
+
+            <hr width="90%">
+
+            <div class="sample">
+                <h3><label>Example</label></h3>
+                <h5><label>Input</label></h5>
+                <label>비트코인은 오를까요?</label><br><br>
+                <h5><label>Result</label></h5>
+                <label>비트코인은 오를까요? 떨어질까요? 비트코인에 대한 이야기를 할 때면 항상 궁금해집니다. 그런데 비트코인은 왜 올랐을까요? 왜 떨어질까요? 그래서 저는 이런 질문을 해보죠. ​"비트코인 가격을 결정하는 원인이 무엇인가?", "비트코인이 오르는 이유는 무엇인가?" ​ 그리고 이번에는 이렇게 생각해봅니다. "그럼 비트코인이 내리는 이유는?" 비트코인 가격과 비트코인 전망에 대해 궁금하시다면.</label><br><br>
+            </div>
+
+            <br><hr width="90%">
+
+            <div class="generate">
+                <h3>Try it!</h3><br>
+                <label>Base text: </label>
+                <input type="text" id="text" style="width:40%">
+                <button class="btn btn-primary btn=lg" type="submit" id="button1" onclick="send_req();">Submit</button><br>
+                <label>Timer:&nbsp;</label><label id="timer">0.0</label><br>
+                <b><label id="warning" style="color:red;"></label></b>
+            </div>
+
+            <br><hr width="90%">
+
+            <div class="result">
+                <h3><label>Result</label></h3>
+                <!-- Story generate result table -->
+                <label id="result"></label>
+            </div>
+
+            <br><hr width="50%">
+        </div>
+    </div>
+</body>
+</html>

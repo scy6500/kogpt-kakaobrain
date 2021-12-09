@@ -13,7 +13,7 @@ info:
           * If length is so big, generate time will be long.
     ---
 servers:
-  - url: https://main-ainize-tutorial-server-scy6500.endpoint.ainize.ai
+  - url: https://main-kogpt-kakaobrain-scy6500.endpoint.ainize.ai/
 
 paths:
   /predict:

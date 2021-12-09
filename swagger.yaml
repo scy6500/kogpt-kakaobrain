@@ -16,7 +16,7 @@ servers:
   - url: https://main-kogpt-kakaobrain-scy6500.endpoint.ainize.ai/
 
 paths:
-  /predict:
+  /generate:
     post:
       requestBody:
         required: true

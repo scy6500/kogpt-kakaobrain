@@ -1,0 +1,49 @@
+openapi: 3.0.1
+
+info:
+  title: KoGPT (Korean Generative Pre-trained Transformer)
+  version: 1.0.0
+  contact:
+    name: Changyeop
+  description: |
+    Generate korean using KakaoBrain's KoGPT model.
+    ---
+          How to use:
+          * Fill the text and length.
+          * If length is so big, generate time will be long.
+    ---
+servers:
+  - url: https://main-ainize-tutorial-server-scy6500.endpoint.ainize.ai
+
+paths:
+  /predict:
+    post:
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: "The base of text you want to create"
+                legnth:
+                  type: string
+                  description: "The length of the text"
+              required:
+                - text
+                - legnth
+      responses:
+        '200':
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: "Bad Request Error"
+        '429':
+          description: "Too many requests"
+        '500':
+          description: "Server-side Error"

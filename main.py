@@ -51,11 +51,10 @@ def make_text(text, length):
     try:
 	result = dict()
 	tokens = tokenizer.encode(text, return_tensors='pt').to(device=device, non_blocking=True)
-  	gen_tokens = model.generate(tokens, do_sample=True, temperature=0.8, max_length=length)
-  	generated = tokenizer.batch_decode(gen_tokens)[0]
+	gen_tokens = model.generate(tokens, do_sample=True, temperature=0.8, max_length=length)
+	generated = tokenizer.batch_decode(gen_tokens)[0]
 	result['result'] = generated
-
-        return result
+	return result
 
     except Exception as e:
         print('Error occur in script generating!', e)
